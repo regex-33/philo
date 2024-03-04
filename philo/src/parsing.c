@@ -60,7 +60,5 @@ int check_parameters(t_time *data, char **argv)
             data->sleep = ft_atoi(argv[i]);
         i++;
     }
-
-   // printf("time_to_die: %s\n", argv[2]);
     return 1;
 }

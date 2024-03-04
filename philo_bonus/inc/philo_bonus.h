@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <errno.h>
 
 typedef struct s_time
 {
@@ -18,6 +19,7 @@ typedef struct s_time
 	long				time_to_eat;
 	long				time_to_sleep;
     long                start_time;
+    long                num_of_times_to_eat;
 }					t_time;
 
 typedef struct  s_philo
@@ -28,6 +30,7 @@ typedef struct  s_philo
     pid_t           pid;
     sem_t           *forks;
     sem_t           *lock;
+    sem_t           *death_sem;
 
     int             id;
     int             num_of_meals;
@@ -36,16 +39,16 @@ typedef struct  s_philo
 }               t_philo;
 
 int     ft_atoi(const char *str);
-long long	current_time_millis(long long first_time);
 void    ft_usleep(useconds_t time);
 void    print_status(long timestamp, int id, char *msg);
 long    get_time(void);
-void    init_philosophers(t_time *data, t_philo *philos, int num_of_philosophers, int num_of_times_to_eat);
+void    init_philosophers(t_time *data, t_philo *philos, int num_of_times_to_eat);
 void    create_processes(t_philo *philos, int num_of_philosophers);
 void    *death_check_routine(void *philosopher);
 void    take_forks(t_philo *philo);
 void    put_forks(t_philo *philo);
 void    philosopher_process(t_philo *philo);
 void    cleanup(t_philo *philos, int num_of_philosophers);
-
+int is_number(char *str);
+int check_parameters(t_time *data, char **argv);
 #endif

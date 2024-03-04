@@ -1,15 +1,4 @@
 
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: dpoveda- <me@izenynn.com>                  +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/10/22 09:32:32 by dpoveda-          #+#    #+#              #
-#    Updated: 2024/02/28 16:10:25 by yachtata         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 # COLORS
 NOCOL=\033[0m
 RED=\033[1;31m
@@ -46,7 +35,7 @@ SRC_PATH = src
 OBJ_PATH = obj
 LIB_PATH = lib
 
-CFLAGS = -g -Wall -Wextra #-Werror
+CFLAGS = -g -Wall -Wextra -fsanitize=thread#-Werror
 
 # ANIMATION
 SRCS_COUNT = 0
@@ -57,7 +46,7 @@ BAR =  ${shell expr 23 \* ${SRCS_COUNT} / ${SRCS_TOT}}
 
 
 # SOURCES
-SRC_FILES = utils.c philo_bonus.c ft_atoi.c init_philosophers.c	
+SRC_FILES = creat_processes.c utils.c philo_bonus.c parsing.c init_philosophers.c	
 
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_FILES))
 

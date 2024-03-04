@@ -30,6 +30,8 @@ typedef struct s_time
 	int				sleep;
 	long long		start_time;
 	int 			do_right;
+	int				philosopher_died;
+	pthread_mutex_t	death_mutex;
 }					t_time;
 
 typedef struct s_philosopher
@@ -41,19 +43,22 @@ typedef struct s_philosopher
 	long long		last_meal;
 	t_time			*data;
 	int				is_dead;
+	int				num_of_times_to_eat;
+	int				count;
+	int				checker;
 }					t_philosopher;
 
-void print_status(long timestamp, int id, char *msg);
+void		print_status(long timestamp, int id, char *msg);
 long long	current_time_millis(long long first_time);
-void	log_state_change(int philosopher_id, const char *state,
-		long long timestamp, long long first_time);
-void check_time_to_die(int id, long long first_time, t_philosopher *philo);
-void				*ft_memset(void *b, int c, size_t len);
-int					check_parameters(t_time *data, char **argv);
-long long			ft_atoi(const char *str);
-void init_mutex(pthread_mutex_t *forks, int num_of_phils);
-void destroy_mutex(pthread_mutex_t *forks, int num_of_phils);
-long get_time(void);
-void wait_threads(t_philosopher *philosophers, int num_of_phils);
+void		log_state_change(int philosopher_id, const char *state, long long timestamp, long long first_time);
+void		check_time_to_die(int id, long long first_time, t_philosopher *philo);
+void		*ft_memset(void *b, int c, size_t len);
+int			check_parameters(t_time *data, char **argv);
+long long	ft_atoi(const char *str);
+void		init_mutex(pthread_mutex_t *forks, int num_of_phils);
+void		destroy_mutex(pthread_mutex_t *forks, int num_of_phils);
+long		get_time(void);
+void		wait_threads(t_philosopher *philosophers, int num_of_phils);
+int			is_number(char *str);
 
 #endif
