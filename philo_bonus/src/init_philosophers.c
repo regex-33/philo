@@ -6,7 +6,7 @@
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 09:19:48 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/03 09:19:49 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:12:33 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	*death_check_routine(void *philosopher)
 				"died");
 			exit(EXIT_FAILURE);
 		}
-		//ft_usleep(10000);
 		usleep(3000);
 	}
 	return (NULL);

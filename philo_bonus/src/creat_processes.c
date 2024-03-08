@@ -6,7 +6,7 @@
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 09:19:38 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/03 09:19:39 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:12:10 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	create_death_checker(pthread_t *death_checker, t_philo *philo)
 		perror("pthread_detach failed");
 		exit(EXIT_FAILURE);
 	}
-	usleep(500);
 }
 
 void	perform_actions_while_eating(t_philo *philo)
@@ -34,7 +33,6 @@ void	perform_actions_while_eating(t_philo *philo)
 	sem_wait(philo->lock);
 	print_status(get_time() - philo->data->start_time, philo->id, "is eating");
 	sem_post(philo->lock);
-	//ft_usleep(philo->data->time_to_eat * 1000);
 	usleep(philo->data->time_to_eat * 1000);
 	sem_wait(philo->race_data);
 	philo->last_meal = get_time();
@@ -48,7 +46,6 @@ void	perform_actions_while_sleeping(t_philo *philo)
 	print_status(get_time() - philo->data->start_time, philo->id,
 		"is sleeping");
 	sem_post(philo->lock);
-	//ft_usleep(philo->data->time_to_sleep * 1000);
 	usleep(philo->data->time_to_sleep * 1000);
 }
 

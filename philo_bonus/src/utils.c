@@ -6,7 +6,7 @@
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 09:19:34 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/03 09:19:35 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:13:48 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,12 @@ void	put_forks(t_philo *philo)
 	sem_post(philo->forks);
 	print_status(get_time() - philo->data->start_time, philo->id,
 		"has put a fork");
+	usleep(70);
 	sem_post(philo->forks);
 	print_status(get_time() - philo->data->start_time, philo->id,
 		"has put a fork");
+	usleep(70);
 }
-/*
-void	ft_usleep(useconds_t time)
-{
-	struct timeval	start;
-	struct timeval	current;
-
-	gettimeofday(&start, NULL);
-	while (1)
-	{
-		usleep(50);
-		gettimeofday(&current, NULL);
-		if ((current.tv_sec * 1000000 + current.tv_usec) - (start.tv_sec
-				* 1000000 + start.tv_usec) >= time)
-			break ;
-	}
-}
-*/
 
 long	get_time(void)
 {
