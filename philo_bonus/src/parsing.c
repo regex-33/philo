@@ -6,35 +6,47 @@
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 12:11:09 by yachtata          #+#    #+#             */
-/*   Updated: 2024/02/28 12:12:06 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 19:07:44 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo_bonus.h"
 
+static const char	*skipwhitespace(const char *c, int *sign)
+{
+	while (*c == ' ' || *c == '\t' || *c == '\n' || *c == '\r' || *c == '\v'
+		|| *c == '\f')
+		c++;
+	if (*c == '-' || *c == '+')
+	{
+		if (*c == '-')
+			*sign = -1;
+		c++;
+	}
+	return (c);
+}
+
 int	ft_atoi(const char *str)
 {
-	int	result;
-	int	sign;
-	int	i;
+	int					i;
+	unsigned long long	n;
+	int					sign;
 
-	result = 0;
-	sign = 1;
 	i = 0;
-	while (str[i] == ' ' || (str[i] >= '\t' && str[i] <= '\r'))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
+	n = 0;
+	sign = 1;
+	if (str == NULL || (str != NULL && *str == '\0'))
+		return (0);
+	str = skipwhitespace(str, &sign);
 	while (str[i] >= '0' && str[i] <= '9')
 	{
-		result = result * 10 + (str[i] - '0');
-		i++;
+		n = (n * 10) + (str[i++] - '0');
+		if (n > LLONG_MAX && sign == 1)
+			return (-1);
+		if (n > LLONG_MAX && sign == -1)
+			return (0);
 	}
-	return (result * sign);
+	return (n * sign);
 }
 
 int	is_number(char *str)
@@ -44,7 +56,7 @@ int	is_number(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (!(str[i] >= '0' && str[i] <= '9'))
+		if (!((str[i] >= '0' && str[i] <= '9') || str[i] == '+'))
 			return (0);
 		i++;
 	}

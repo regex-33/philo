@@ -6,7 +6,7 @@
 /*   By: yachtata <yachtata@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 10:04:38 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/08 10:04:39 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 19:17:55 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <sys/time.h>
 # include <time.h>
 # include <unistd.h>
+# include <limits.h>
 
 typedef struct s_time
 {
@@ -64,7 +65,7 @@ void				*philosopher_thread(void *arg);
 
 /*		parising functoins		*/
 
-long long			ft_atoi(const char *str);
+int					ft_atoi(const char *str);
 int					is_number(char *str);
 int					check_parameters(t_time *data, char **argv);
 

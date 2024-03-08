@@ -59,7 +59,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $^ -o $@
-	@echo "\n\n\n   ${BOLD}${CUR}${LYELLOW}FDF COMPILED ✨${DEF}\n"
+	@echo "\n\n\n   ${BOLD}${CUR}${LYELLOW}PHILO_BONUS COMPILED ✨${DEF}\n"
 
 # #is used to redirect both standard output (stdout) and standard error (stderr) to /dev/null
 $(OBJ_PATH):
@@ -70,17 +70,13 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 	@${eval SRCS_COUNT = ${shell expr ${SRCS_COUNT} + 1}}
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo ""
-	@echo " ${BOLD}${CUR}${BEIGE}-> Compiling ${DEF}${BOLD}${LYELLOW}[FDF]${DEF}"
+	@echo " ${BOLD}${CUR}${BEIGE}-> Compiling ${DEF}${BOLD}${LYELLOW}[PHILO_BONUS]${DEF}"
 	@printf " ${BEIGE}   [${LGREEN}%-23.${BAR}s${BEIGE}] [%d/%d (%d%%)]${DEF}" "***********************" ${SRCS_COUNT} ${SRCS_TOT} ${SRCS_PRCT}
 #@echo "${UP}${UP}${UP}": Uses ANSI escape sequences (${UP}) to move the cursor up three lines
 	@echo "${UP}${UP}${UP}"
 
 clean:
 	@rm -rf $(OBJ_PATH)
-
-test : $(NAME)
-	make
-	./fdf test_maps/t2.fdf
 
 fclean: clean
 	@rm -rf $(NAME)
@@ -89,7 +85,7 @@ re: fclean all
 
 norm:
 	@printf "\n${GRN}##########${YEL} NORMINETTE ${GRN}##########${NOCOL}\n"
-	@printf "\n${GRN}FDF:${BLU}\n\n"
+	@printf "\n${GRN}PHILO_BONUS:${BLU}\n\n"
 	@norminette $(INC_PATH)
 	@norminette $(SRC_PATH)
 	@printf "${NOCOL}"

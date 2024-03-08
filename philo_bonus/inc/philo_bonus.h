@@ -6,7 +6,7 @@
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 10:23:09 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/07 10:23:10 by yachtata         ###   ########.fr       */
+/*   Updated: 2024/03/08 19:08:07 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/time.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <limits.h>
 
 typedef struct s_time
 {
