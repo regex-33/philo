@@ -36,6 +36,7 @@ int	ft_atoi(const char *str)
 	}
 	return (result * sign);
 }
+
 int	is_number(char *str)
 {
 	int	i;
@@ -55,7 +56,7 @@ int	check_parameters(t_time *data, char **argv)
 	int	i;
 
 	i = 0;
-    data->num_of_times_to_eat = 0;
+	data->num_of_times_to_eat = 0;
 	while (argv[i])
 	{
 		if (!is_number(argv[i]))
@@ -68,8 +69,8 @@ int	check_parameters(t_time *data, char **argv)
 			data->time_to_eat = ft_atoi(argv[i]);
 		else if (i == 3)
 			data->time_to_sleep = ft_atoi(argv[i]);
-        else
-            data->num_of_times_to_eat = ft_atoi(argv[i]);
+		else
+			data->num_of_times_to_eat = ft_atoi(argv[i]);
 		i++;
 	}
 	data->start_time = get_time();
@@ -78,7 +79,7 @@ int	check_parameters(t_time *data, char **argv)
 
 void	cleanup(t_philo *philos, int num_of_philosophers)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < num_of_philosophers)

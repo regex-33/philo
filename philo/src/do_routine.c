@@ -1,82 +1,104 @@
-void odd_philosopher_action(t_philosopher *philo, pthread_mutex_t *left_fork, pthread_mutex_t *right_fork)
-{
-    if (if_die(philo))
-        return;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_routine.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yachtata <yachtata@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/08 10:03:33 by yachtata          #+#    #+#             */
+/*   Updated: 2024/03/08 10:03:34 by yachtata         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-    pthread_mutex_lock(left_fork);
-    if (if_die(philo))
-        return;
-    print_status(get_time() - philo->data->start_time, philo->id, "has taken a fork");
-    pthread_mutex_lock(right_fork);
-    if (if_die(philo))
-        return;
-    print_status(get_time() - philo->data->start_time, philo->id, "has taken a fork");
+#include "../inc/philo.h"
+
+int	if_die(t_philosopher *philo)
+{
+	pthread_mutex_lock(&philo->data->death_mutex);
+	if (philo->data->philosopher_died)
+	{
+		pthread_mutex_unlock(&philo->data->death_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->death_mutex);
+	return (0);
 }
 
-void even_philosopher_action(t_philosopher *philo, pthread_mutex_t *left_fork, pthread_mutex_t *right_fork)
+int	check_for_philosopher_death(t_philosopher *philosophers, int num_philo)
 {
-    usleep(500);
-    if (if_die(philo))
-        return;
-    pthread_mutex_lock(right_fork);
-    if (if_die(philo))
-        return;
-    print_status(get_time() - philo->data->start_time, philo->id, "has taken a fork");
-    pthread_mutex_lock(left_fork);
-    if (if_die(philo))
-        return;
-    print_status(get_time() - philo->data->start_time, philo->id, "has taken a fork");
+	int	i;
+
+	i = 0;
+	while (i < num_philo)
+	{
+		pthread_mutex_lock(&philosophers[i].data->died);
+		if (get_time() - philosophers[i].last_meal >= philosophers[i].data->die)
+		{
+			pthread_mutex_lock(&philosophers->data->death_mutex);
+			philosophers->data->philosopher_died = 1;
+			pthread_mutex_unlock(&philosophers->data->death_mutex);
+			print_status(get_time() - philosophers[i].data->start_time,
+				philosophers[i].id, "is die");
+			pthread_mutex_unlock(&philosophers[i].data->died);
+			return (0);
+		}
+		pthread_mutex_unlock(&philosophers[i].data->died);
+		usleep(3000);
+		i++;
+	}
+	return (1);
 }
 
-void philo_action_after_eating(t_philosopher *philo, int philo_id)
+void	*check_time_of_threads(void *arg)
 {
-    print_status(get_time() - philo->data->start_time, philo_id, "is eating");
-    usleep(philo->data->eat * 1000);
-    philo->last_meal = get_time();
-    pthread_mutex_unlock(philo->right_fork);
-    pthread_mutex_unlock(philo->left_fork);
+	t_philosopher	*philosophers;
+	int				num_philo;
+
+	philosophers = (t_philosopher *)arg;
+	num_philo = philosophers[0].data->num_of_phils;
+	while (1)
+	{
+		if (!check_for_philosopher_death(philosophers, num_philo))
+			return (NULL);
+	}
+	return (NULL);
 }
 
-void philo_action_after_sleeping(t_philosopher *philo, int philo_id)
+void	execute_philosopher_actions(t_philosopher *philo, int philo_id,
+		pthread_mutex_t *left_fork, pthread_mutex_t *right_fork)
 {
-    print_status(get_time() - philo->data->start_time, philo_id, "is sleeping");
-    usleep(philo->data->sleep * 1000);
+	if (philo_id % 2)
+		odd_philosopher_action(philo, left_fork, right_fork);
+	else
+		even_philosopher_action(philo, left_fork, right_fork);
+	if (if_die(philo))
+		return ;
+	philo_action_after_eating(philo, philo_id);
+	if (if_die(philo))
+		return ;
+	philo_action_after_sleeping(philo, philo_id);
+	if (if_die(philo))
+		return ;
+	if (!philo_action_after_thinking(philo, philo_id))
+		return ;
 }
 
-int philo_action_after_thinking(t_philosopher *philo, int philo_id)
+void	*philosopher_thread(void *arg)
 {
-    print_status(get_time() - philo->data->start_time, philo_id, "is thinking");
-    if (philo->checker)
-    {
-        philo->count++;
-        if (philo->count >= philo->num_of_times_to_eat)
-            return 0;
-    }
-    return 1;
-}
-void *philosopher_thread(void *arg)
-{
-    t_philosopher *philo = (t_philosopher *)arg;
-    int philo_id = philo->id;
-    pthread_mutex_t *left_fork = philo->left_fork;
-    pthread_mutex_t *right_fork = philo->right_fork;
+	t_philosopher	*philo;
+	int				philo_id;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 
-    while (1)
-    {
-        if (philo_id % 2)
-            odd_philosopher_action(philo, left_fork, right_fork);
-        else
-            even_philosopher_action(philo, left_fork, right_fork);
-        if (if_die(philo))
-            return NULL;
-        philo_action_after_eating(philo, philo_id);
-        if (if_die(philo))
-            return NULL;
-        philo_action_after_sleeping(philo, philo_id);
-        if (if_die(philo))
-            return NULL;
-        if (!philo_action_after_thinking(philo, philo_id))
-            return NULL;
-    }
-    return NULL;
+	philo = (t_philosopher *)arg;
+	philo_id = philo->id;
+	left_fork = philo->left_fork;
+	right_fork = philo->right_fork;
+	while (1)
+	{
+		if (if_die(philo))
+			return (NULL);
+		execute_philosopher_actions(philo, philo_id, left_fork, right_fork);
+	}
+	return (NULL);
 }

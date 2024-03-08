@@ -31,7 +31,7 @@ void	put_forks(t_philo *philo)
 	print_status(get_time() - philo->data->start_time, philo->id,
 		"has put a fork");
 }
-
+/*
 void	ft_usleep(useconds_t time)
 {
 	struct timeval	start;
@@ -47,6 +47,7 @@ void	ft_usleep(useconds_t time)
 			break ;
 	}
 }
+*/
 
 long	get_time(void)
 {

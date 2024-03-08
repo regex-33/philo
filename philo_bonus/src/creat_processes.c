@@ -25,6 +25,7 @@ void	create_death_checker(pthread_t *death_checker, t_philo *philo)
 		perror("pthread_detach failed");
 		exit(EXIT_FAILURE);
 	}
+	usleep(500);
 }
 
 void	perform_actions_while_eating(t_philo *philo)
@@ -33,8 +34,11 @@ void	perform_actions_while_eating(t_philo *philo)
 	sem_wait(philo->lock);
 	print_status(get_time() - philo->data->start_time, philo->id, "is eating");
 	sem_post(philo->lock);
-	ft_usleep(philo->data->time_to_eat * 1000);
+	//ft_usleep(philo->data->time_to_eat * 1000);
+	usleep(philo->data->time_to_eat * 1000);
+	sem_wait(philo->race_data);
 	philo->last_meal = get_time();
+	sem_post(philo->race_data);
 	put_forks(philo);
 }
 
@@ -44,7 +48,8 @@ void	perform_actions_while_sleeping(t_philo *philo)
 	print_status(get_time() - philo->data->start_time, philo->id,
 		"is sleeping");
 	sem_post(philo->lock);
-	ft_usleep(philo->data->time_to_sleep * 1000);
+	//ft_usleep(philo->data->time_to_sleep * 1000);
+	usleep(philo->data->time_to_sleep * 1000);
 }
 
 void	philosopher_process(t_philo *philo)
@@ -61,7 +66,7 @@ void	philosopher_process(t_philo *philo)
 		if (philo->check_flag)
 		{
 			philo->num_of_meals++;
-            if (philo->num_of_meals == philo->num_of_times_to_eat)
+			if (philo->num_of_meals == philo->num_of_times_to_eat)
 				break ;
 		}
 	}
@@ -69,8 +74,8 @@ void	philosopher_process(t_philo *philo)
 
 void	create_processes(t_philo *philos, int num_of_philosophers)
 {
-	int i;
-	pid_t pid;
+	int		i;
+	pid_t	pid;
 
 	i = 0;
 	while (i < num_of_philosophers)

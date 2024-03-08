@@ -15,19 +15,22 @@
 void	*death_check_routine(void *philosopher)
 {
 	t_philo	*philo;
+	long	temp;
 
 	philo = (t_philo *)philosopher;
 	while (1)
 	{
-		if (get_time() - philo->last_meal >= philo->data->time_to_die)
+		sem_wait(philo->race_data);
+		temp = philo->last_meal;
+		sem_post(philo->race_data);
+		if (get_time() - temp >= philo->data->time_to_die)
 		{
-			sem_wait(philo->lock);
 			print_status(get_time() - philo->data->start_time, philo->id,
 				"died");
-			sem_post(philo->lock);
 			exit(EXIT_FAILURE);
 		}
-		ft_usleep(10000);
+		//ft_usleep(10000);
+		usleep(3000);
 	}
 	return (NULL);
 }
@@ -61,12 +64,15 @@ void	initialize_philosopher(t_philo *philo, int id, t_time *data,
 	philo->lock = sem_open("/lock", O_CREAT | O_EXCL, 0666, 1);
 	if (philo->lock == SEM_FAILED)
 	{
-		perror("sem_open failed");
+		perror("sem_open lock failed");
 		exit(EXIT_FAILURE);
 	}
-	if (data->num_of_times_to_eat > 0)
-		philo->check_flag = 1;
-	sem_unlink("/lock");
+	philo->race_data = sem_open("/race_data", O_CREAT | O_EXCL, 0666, 1);
+	if (philo->race_data == SEM_FAILED)
+	{
+		perror("sem_open race_data failed");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	init_philosophers(t_time *data, t_philo *philos,
@@ -80,6 +86,10 @@ void	init_philosophers(t_time *data, t_philo *philos,
 	while (i < num_of_philosophers)
 	{
 		initialize_philosopher(&philos[i], i, data, forks);
+		if (data->num_of_times_to_eat > 0)
+			philos[i].check_flag = 1;
+		sem_unlink("/lock");
+		sem_unlink("/race_data");
 		i++;
 	}
 }

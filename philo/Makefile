@@ -1,12 +1,12 @@
-
+# **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dpoveda- <me@izenynn.com>                  +#+  +:+       +#+         #
+#    By: yachtata <yachtata@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/10/22 09:32:32 by dpoveda-          #+#    #+#              #
-#    Updated: 2024/02/25 07:55:16 by yachtata         ###   ########.fr        #
+#    Created: 2024/03/08 10:36:36 by yachtata          #+#    #+#              #
+#    Updated: 2024/03/08 10:36:38 by yachtata         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,6 @@ CC = gcc
 INC_PATH = inc
 SRC_PATH = src
 OBJ_PATH = obj
-LIB_PATH = lib
 
 CFLAGS = -g -Wall -Wextra -fsanitize=thread#-Werror
 
@@ -57,7 +56,7 @@ BAR =  ${shell expr 23 \* ${SRCS_COUNT} / ${SRCS_TOT}}
 
 
 # SOURCES
-SRC_FILES = utils.c philo.c parsing.c	
+SRC_FILES =  philo_actions.c utils.c philo.c parsing.c do_routine.c	
 
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_FILES))
 
@@ -70,7 +69,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $^ -o $@
-	@echo "\n\n\n   ${BOLD}${CUR}${LYELLOW}FDF COMPILED ✨${DEF}\n"
+	@echo "\n\n\n   ${BOLD}${CUR}${LYELLOW}PHILO COMPILED ✨${DEF}\n"
 
 # #is used to redirect both standard output (stdout) and standard error (stderr) to /dev/null
 $(OBJ_PATH):
@@ -81,17 +80,13 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 	@${eval SRCS_COUNT = ${shell expr ${SRCS_COUNT} + 1}}
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo ""
-	@echo " ${BOLD}${CUR}${BEIGE}-> Compiling ${DEF}${BOLD}${LYELLOW}[FDF]${DEF}"
+	@echo " ${BOLD}${CUR}${BEIGE}-> Compiling ${DEF}${BOLD}${LYELLOW}[PHILO]${DEF}"
 	@printf " ${BEIGE}   [${LGREEN}%-23.${BAR}s${BEIGE}] [%d/%d (%d%%)]${DEF}" "***********************" ${SRCS_COUNT} ${SRCS_TOT} ${SRCS_PRCT}
 #@echo "${UP}${UP}${UP}": Uses ANSI escape sequences (${UP}) to move the cursor up three lines
 	@echo "${UP}${UP}${UP}"
 
 clean:
 	@rm -rf $(OBJ_PATH)
-
-test : $(NAME)
-	make
-	./fdf test_maps/t2.fdf
 
 fclean: clean
 	@rm -rf $(NAME)
@@ -100,7 +95,7 @@ re: fclean all
 
 norm:
 	@printf "\n${GRN}##########${YEL} NORMINETTE ${GRN}##########${NOCOL}\n"
-	@printf "\n${GRN}FDF:${BLU}\n\n"
+	@printf "\n${GRN}PHILO:${BLU}\n\n"
 	@norminette $(INC_PATH)
 	@norminette $(SRC_PATH)
 	@printf "${NOCOL}"
