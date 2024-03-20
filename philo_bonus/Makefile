@@ -35,7 +35,7 @@ SRC_PATH = src
 OBJ_PATH = obj
 LIB_PATH = lib
 
-CFLAGS = -g -Wall -Wextra #-fsanitize=thread#-Werror
+CFLAGS = -g -Wall -Wextra -fsanitize=thread#-Werror
 
 # ANIMATION
 SRCS_COUNT = 0

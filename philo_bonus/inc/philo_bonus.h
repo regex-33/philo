@@ -42,9 +42,9 @@ typedef struct s_philo
 
 	pid_t			pid;
 	sem_t			*forks;
-	sem_t			*lock;
 	sem_t			*race_data;
 	sem_t			*death_sem;
+	sem_t			*print_lock;
 
 	int				id;
 	int				num_of_meals;
@@ -54,7 +54,7 @@ typedef struct s_philo
 
 int					ft_atoi(const char *str);
 void				ft_usleep(useconds_t time);
-void				print_status(long timestamp, int id, char *msg);
+void				print_status(t_philo *philo, long timestamp, int id, char *msg);
 long				get_time(void);
 void				init_philosophers(t_time *data, t_philo *philos,
 						int num_of_times_to_eat);

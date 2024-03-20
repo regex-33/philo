@@ -30,9 +30,9 @@ void	create_death_checker(pthread_t *death_checker, t_philo *philo)
 void	perform_actions_while_eating(t_philo *philo)
 {
 	take_forks(philo);
-	sem_wait(philo->lock);
-	print_status(get_time() - philo->data->start_time, philo->id, "is eating");
-	sem_post(philo->lock);
+
+	print_status(philo, get_time() - philo->data->start_time, philo->id, "is eating");
+
 	usleep(philo->data->time_to_eat * 1000);
 	sem_wait(philo->race_data);
 	philo->last_meal = get_time();
@@ -42,10 +42,10 @@ void	perform_actions_while_eating(t_philo *philo)
 
 void	perform_actions_while_sleeping(t_philo *philo)
 {
-	sem_wait(philo->lock);
-	print_status(get_time() - philo->data->start_time, philo->id,
+
+	print_status(philo, get_time() - philo->data->start_time, philo->id,
 		"is sleeping");
-	sem_post(philo->lock);
+
 	usleep(philo->data->time_to_sleep * 1000);
 }
 
@@ -58,8 +58,10 @@ void	philosopher_process(t_philo *philo)
 	{
 		perform_actions_while_eating(philo);
 		perform_actions_while_sleeping(philo);
-		print_status(get_time() - philo->data->start_time, philo->id,
+
+		print_status(philo, get_time() - philo->data->start_time, philo->id,
 			"is thinking");
+
 		if (philo->check_flag)
 		{
 			philo->num_of_meals++;

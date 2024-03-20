@@ -6,7 +6,7 @@
 #    By: yachtata <yachtata@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/08 10:36:36 by yachtata          #+#    #+#              #
-#    Updated: 2024/03/08 10:36:38 by yachtata         ###   ########.fr        #
+#    Updated: 2024/03/20 23:24:14 by yachtata         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,7 @@ INC_PATH = inc
 SRC_PATH = src
 OBJ_PATH = obj
 
-CFLAGS = -g -Wall -Wextra -fsanitize=thread#-Werror
+CFLAGS = -g -Wall -Wextra #-fsanitize=thread#-Werror
 
 # ANIMATION
 SRCS_COUNT = 0

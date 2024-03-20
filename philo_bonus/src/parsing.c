@@ -96,7 +96,7 @@ void	cleanup(t_philo *philos, int num_of_philosophers)
 	i = 0;
 	while (i < num_of_philosophers)
 	{
-		sem_close(philos[i].lock);
+		sem_close(philos[i].print_lock);
 		i++;
 	}
 	sem_close(philos[0].forks);
