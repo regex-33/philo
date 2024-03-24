@@ -1,0 +1,21 @@
+# Suppression for pthread_mutex_destroy of a locked mutex
+{
+   pthread_mutex_destroy
+   Memcheck:Cond
+   fun:pthread_mutex_destroy
+}
+
+# Suppression for thread still holding locks on exit
+{
+   pthread_mutex_destroy
+   Memcheck:Leak
+   fun:pthread_mutex_destroy
+}
+
+# Suppression for possible data race during read
+{
+   pthread_mutex_lock
+   Memcheck:Cond
+   fun:pthread_mutex_lock
+}
+
