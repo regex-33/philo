@@ -12,26 +12,24 @@
 
 #include "../inc/philo_bonus.h"
 
-sem_t print_lock;
-
 void	take_forks(t_philo *philo)
 {
 	sem_wait(philo->forks);
-	print_status(philo, get_time() - philo->data->start_time, philo->id,
+	print_status(get_time() - philo->data->start_time, philo->id,
 		"has taken a fork");
 	sem_wait(philo->forks);
-	print_status(philo, get_time() - philo->data->start_time, philo->id,
+	print_status(get_time() - philo->data->start_time, philo->id,
 		"has taken a fork");
 }
 
 void	put_forks(t_philo *philo)
 {
 	sem_post(philo->forks);
-	print_status(philo, get_time() - philo->data->start_time, philo->id,
+	print_status(get_time() - philo->data->start_time, philo->id,
 		"has put a fork");
 	usleep(70);
 	sem_post(philo->forks);
-	print_status(philo, get_time() - philo->data->start_time, philo->id,
+	print_status(get_time() - philo->data->start_time, philo->id,
 		"has put a fork");
 	usleep(70);
 }
@@ -44,12 +42,23 @@ long	get_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void print_status(t_philo *philo,long timestamp, int id, char *msg)
+void	print_status(long timestamp, int id, char *msg)
 {
-	(void *)philo;
-    sem_wait(philo->print_lock);
+	printf("%ld %d %s\n", timestamp, id, msg);
+}
 
-    printf("%ld %d %s\n", timestamp, id, msg);
+void	put_time_stamp_memset(long *last_meal)
+{
+	long	current_time;
+	int		i;
 
-    sem_post(philo->print_lock);
+	i = 0;
+	current_time = get_time();
+	memset(last_meal, 0, sizeof(long));
+	while (i < 8)
+	{
+		memset(((unsigned char *)last_meal) + i,
+			((unsigned char *)&current_time)[i], 1);
+		i++;
+	}
 }

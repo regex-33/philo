@@ -25,7 +25,8 @@ void	*death_check_routine(void *philosopher)
 		sem_post(philo->race_data);
 		if (get_time() - temp >= philo->data->time_to_die)
 		{
-			print_status(philo,get_time() - philo->data->start_time, philo->id,
+			sem_wait(philo->data->lock_died);
+			print_status(get_time() - philo->data->start_time, philo->id,
 				"died");
 			exit(EXIT_FAILURE);
 		}
@@ -39,7 +40,7 @@ void	initialize_forks(sem_t **forks, int num_of_philosophers)
 	*forks = sem_open("/forks", O_CREAT | O_EXCL, 0666, num_of_philosophers);
 	if (*forks == SEM_FAILED)
 	{
-		printf("sem_open failed\n");
+		perror("philo_bonus: sem_open failed");
 		exit(EXIT_FAILURE);
 	}
 	sem_unlink("/forks");
@@ -66,12 +67,6 @@ void	initialize_philosopher(t_philo *philo, int id, t_time *data,
 		perror("sem_open race_data failed");
 		exit(EXIT_FAILURE);
 	}
-	philo->print_lock = sem_open("/print_lock", O_CREAT | O_EXCL, 0666, 1);
-	if (philo->print_lock == SEM_FAILED)
-	{
-		perror("sem_open race_data failed");
-		exit(EXIT_FAILURE);
-	}
 }
 
 void	init_philosophers(t_time *data, t_philo *philos,
@@ -81,6 +76,13 @@ void	init_philosophers(t_time *data, t_philo *philos,
 	int		i;
 
 	i = 0;
+	data->lock_died = sem_open("/lock_died", O_CREAT | O_EXCL, 0666, 1);
+	if (data->lock_died == SEM_FAILED)
+	{
+		perror("sem_open lock_died failed");
+		exit(EXIT_FAILURE);
+	}
+	sem_unlink("/lock_died");
 	initialize_forks(&forks, data->num_of_philosophers);
 	while (i < num_of_philosophers)
 	{
@@ -88,7 +90,6 @@ void	init_philosophers(t_time *data, t_philo *philos,
 		if (data->num_of_times_to_eat > 0)
 			philos[i].check_flag = 1;
 		sem_unlink("/race_data");
-		sem_unlink("/print_lock");
 		i++;
 	}
 }

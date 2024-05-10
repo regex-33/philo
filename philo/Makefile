@@ -45,8 +45,7 @@ INC_PATH = inc
 SRC_PATH = src
 OBJ_PATH = obj
 
-CFLAGS = -g -Wall -Wextra #-fsanitize=thread#-Werror
-
+CFLAGS = -g -Wall -Wextra -Werror #-fsanitize=thread 
 # ANIMATION
 SRCS_COUNT = 0
 SRCS_TOT = ${shell find ./src/ -type f -name '*.c' | wc -l}
@@ -56,7 +55,7 @@ BAR =  ${shell expr 23 \* ${SRCS_COUNT} / ${SRCS_TOT}}
 
 
 # SOURCES
-SRC_FILES =  philo_actions.c utils.c philo.c parsing.c do_routine.c	
+SRC_FILES =  print_functions.c philo_actions.c utils.c philo.c parsing.c do_routine.c	
 
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_FILES))
 

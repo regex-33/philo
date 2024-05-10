@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   print_functions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yachtata <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/28 12:11:09 by yachtata          #+#    #+#             */
-/*   Updated: 2024/03/08 19:07:44 by yachtata         ###   ########.fr       */
+/*   Created: 2024/05/10 15:30:21 by yachtata          #+#    #+#             */
+/*   Updated: 2024/05/10 15:30:23 by yachtata         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philo_bonus.h"
+#include "../inc/philo.h"
 
 void	ft_putendl_fd(char *s, int fd)
 {
@@ -66,44 +66,7 @@ long long	ft_atoi(const char *str)
 	return (n * sign);
 }
 
-int	is_number(char *str)
+void	print_status(long timestamp, int id, char *msg)
 {
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (!((str[i] >= '0' && str[i] <= '9') || str[i] == '+'))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	check_parameters(t_time *data, char **argv, int i)
-{
-	i = 0;
-	data->num_of_times_to_eat = 0;
-	while (argv[i])
-	{
-		if (!is_number(argv[i]))
-			return (-1);
-		if (i == 0)
-			data->num_of_philosophers = ft_atoi(argv[i]);
-		else if (i == 1)
-			data->time_to_die = ft_atoi(argv[i]);
-		else if (i == 2)
-			data->time_to_eat = ft_atoi(argv[i]);
-		else if (i == 3)
-			data->time_to_sleep = ft_atoi(argv[i]);
-		else
-		{
-			data->num_of_times_to_eat = ft_atoi(argv[i]);
-			if (data->num_of_times_to_eat <= 0)
-				return (0);
-		}
-		i++;
-	}
-	data->start_time = get_time();
-	return (1);
+	printf("%ld %d %s\n", timestamp, id, msg);
 }

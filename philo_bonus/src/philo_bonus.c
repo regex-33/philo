@@ -12,31 +12,34 @@
 
 #include "../inc/philo_bonus.h"
 
-int	check_and_parse_arguments(int argc, t_time *data, char **argv)
+void	cleanup(t_philo *philos, int num_of_philosophers)
 {
-	if (argc < 5 || argc > 6)
+	int	i;
+
+	i = 0;
+	while (i < num_of_philosophers)
 	{
-		printf("Error: Wrong number of arguments\n");
-		return (0);
+		sem_close(philos[i].race_data);
+		i++;
 	}
-	argv++;
-	if (!check_parameters(data, argv))
-	{
-		printf("error\n");
-		return (0);
-	}
-	return (1);
+	sem_close(philos[0].forks);
+	sem_close(philos[0].data->lock_died);
 }
 
-void	handle_waitpid_error(void)
+int	check_and_parse_arguments(int argc, t_time *data, char **argv)
 {
-	if (errno == ECHILD)
-		return ;
-	else
-	{
-		perror("waitpid");
-		exit(EXIT_FAILURE);
-	}
+	int	result;
+
+	result = 0;
+	if (argc < 5 || argc > 6)
+		return (ft_putendl_fd("Error: Wrong number of arguments", 2), 0);
+	argv++;
+	result = check_parameters(data, argv, 0);
+	if (result == -1)
+		return (ft_putendl_fd("philo: parse error", 2), 0);
+	else if (!result)
+		return (0);
+	return (1);
 }
 
 void	break_cleanup(t_philo *philos, int num_of_philosophers)
@@ -65,14 +68,14 @@ void	wait_and_cleanup(t_philo *philos, int num_of_philosophers)
 		pid = waitpid(-1, &status, 0);
 		if (pid == -1)
 		{
-			handle_waitpid_error();
-			break ;
+			if (errno == ECHILD)
+				return ;
+			else
+				return (perror("philo"), exit(EXIT_FAILURE));
 		}
 		if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
-		{
-			break_cleanup(philos, num_of_philosophers);
-			exit(0);
-		}
+			return (break_cleanup(philos, num_of_philosophers),
+				exit(EXIT_SUCCESS));
 		num_processes_remaining--;
 	}
 	cleanup(philos, num_of_philosophers);
@@ -85,7 +88,11 @@ int	main(int argc, char **argv)
 	t_philo	*philos;
 
 	if (!check_and_parse_arguments(argc, &data, argv))
+	{
+		if (data.num_of_times_to_eat <= 0)
+			return (0);
 		return (1);
+	}
 	philos = malloc(sizeof(t_philo) * data.num_of_philosophers);
 	if (!philos)
 		return (1);
@@ -94,40 +101,3 @@ int	main(int argc, char **argv)
 	wait_and_cleanup(philos, data.num_of_philosophers);
 	return (0);
 }
-/*
-void	wait_and_cleanup(t_philo *philos, int num_of_philosophers)
-{
-	int		status;
-	pid_t	pid;
-	int		i;
-	int		num_processes_remaining;
-
-	num_processes_remaining = num_of_philosophers;
-	while (num_processes_remaining > 0)
-	{
-		pid = waitpid(-1, &status, 0);
-		if (pid == -1)
-		{
-			if (errno == ECHILD)
-				break ;
-			else
-			{
-				perror("waitpid");
-				exit(EXIT_FAILURE);
-			}
-		}
-		if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
-		{
-			i = 0;
-			cleanup(philos, num_of_philosophers);
-			while (i < num_of_philosophers)
-			{
-				kill(philos[i].pid, SIGKILL);
-				i++;
-			}
-			exit(0);
-		}
-		num_processes_remaining--;
-	}
-	cleanup(philos, num_of_philosophers);
-}*/

@@ -15,15 +15,16 @@
 
 # include <errno.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <pthread.h>
 # include <semaphore.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/time.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <limits.h>
 
 typedef struct s_time
 {
@@ -33,6 +34,7 @@ typedef struct s_time
 	long			time_to_sleep;
 	long			start_time;
 	long			num_of_times_to_eat;
+	sem_t			*lock_died;
 }					t_time;
 
 typedef struct s_philo
@@ -44,7 +46,6 @@ typedef struct s_philo
 	sem_t			*forks;
 	sem_t			*race_data;
 	sem_t			*death_sem;
-	sem_t			*print_lock;
 
 	int				id;
 	int				num_of_meals;
@@ -52,18 +53,45 @@ typedef struct s_philo
 	int				check_flag;
 }					t_philo;
 
-int					ft_atoi(const char *str);
-void				ft_usleep(useconds_t time);
-void				print_status(t_philo *philo, long timestamp, int id, char *msg);
-long				get_time(void);
+/*		creat processes		*/
+
+void				create_death_checker(pthread_t *death_checker,
+						t_philo *philo);
+void				perform_actions_while_eating(t_philo *philo);
+void				perform_actions_while_sleeping(t_philo *philo);
+void				philosopher_process(t_philo *philo);
+void				create_processes(t_philo *philos, int num_of_philosophers);
+
+/*		init_phiosophers	*/
+
+void				*death_check_routine(void *philosopher);
+void				initialize_forks(sem_t **forks, int num_of_philosophers);
+void				initialize_philosopher(t_philo *philo, int id, t_time *data,
+						sem_t *forks);
 void				init_philosophers(t_time *data, t_philo *philos,
 						int num_of_times_to_eat);
-void				create_processes(t_philo *philos, int num_of_philosophers);
-void				*death_check_routine(void *philosopher);
+
+/*			parsing			*/
+
+void				ft_putendl_fd(char *s, int fd);
+long long			ft_atoi(const char *str);
+int					is_number(char *str);
+int					check_parameters(t_time *data, char **argv, int i);
+
+/*		philo bonus			*/
+
+void				cleanup(t_philo *philos, int num_of_philosophers);
+int					check_and_parse_arguments(int argc, t_time *data,
+						char **argv);
+void				break_cleanup(t_philo *philos, int num_of_philosophers);
+void				wait_and_cleanup(t_philo *philos, int num_of_philosophers);
+
+/*			utils			*/
+
 void				take_forks(t_philo *philo);
 void				put_forks(t_philo *philo);
-void				philosopher_process(t_philo *philo);
-void				cleanup(t_philo *philos, int num_of_philosophers);
-int					is_number(char *str);
-int					check_parameters(t_time *data, char **argv);
+long				get_time(void);
+void				print_status(long timestamp, int id, char *msg);
+void				put_time_stamp_memset(long *last_meal);
+
 #endif
